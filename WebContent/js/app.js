@@ -4,11 +4,10 @@ var app = angular.module('sbsPortal', []);
 app.controller('sbsCtrl', function($scope,$http) {
 	$scope.offset = 0;
 	$scope.maxPages = 10;
-	$scope.prevResult = null;
-	$scope.prevTab = null;
 	$scope.loading = false;
 	$scope.pageSize = 10;
 	$scope.dataFilter = 'project_id';
+	
 	if($scope.sortDirection==undefined){
 		$scope.sortDirection="ASC";
 	}
@@ -27,12 +26,21 @@ app.controller('sbsCtrl', function($scope,$http) {
 			}
 		})
 		.then(function(response){
-			$scope.prevResult = $scope.result;
 			$scope.result = response.data;
 			$scope.error=undefined;
 			$scope.loading = false;
 			$scope.totalPages = Math.ceil($scope.result.totalResults/$scope.pageSize);
 			$scope.getPages();
+			$scope.filterKeys = $scope.result.keys;
+			if($scope.activeTab == 'accountSummary'){
+				$scope.filterKeys = []
+				for(var key of $scope.result.keys){
+					if(key != 'accountType'){
+						$scope.filterKeys.push(key);
+					}
+				}
+			}
+			
 			return $scope.result;
 		})
 		.catch(function(error){
@@ -44,23 +52,27 @@ app.controller('sbsCtrl', function($scope,$http) {
 		if(keyname==='accountType'){
 			return;
 		}
+		if(keyname === $scope.sortKey){
+	        $scope.reverse = !$scope.reverse; // if true make it false and
+												// vice
+			// versa
+		}
+		else{
+			$scope.reverse = false;
+		}
         $scope.sortKey = keyname;   // set the sortKey to the param passed
-        $scope.reverse = !$scope.reverse; // if true make it false and vice
-											// versa
         $scope.sortDirection = $scope.reverse?"DESC":"ASC";
 		$scope.getResult();
     }
 	$scope.setActive = function(active){
-		$scope.prevTab = $scope.activeTab;
 		$scope.activeTab = active;
 		$scope.sortKey = undefined;
 		$scope.sortDirection = "ASC";
 		$scope.offset = 0;
+		$scope.currPage = 1;
 		$scope.getResult();
 	}
-	$scope.setFilter = function(filter){
-		$scope.cellFilter = filter;
-	}
+
 	$scope.setOptional = function(data,key){
 		if($scope.activeTab !== 'accountSummary'){
 			return false;
@@ -98,6 +110,21 @@ app.controller('sbsCtrl', function($scope,$http) {
 			];
 			$scope.setActive('volume');
 			return true;
+
+		case "stdVolumes":
+			$scope.optional=[
+ 			    "project_id = "+data.project_id,
+ 				"volume_type_id = 1 or v.volume_type_id is NULL"
+ 			];
+			$scope.setActive('volume');
+			return true;
+		case "ssdVolumes":
+			$scope.optional=[
+ 			    "project_id = "+data.project_id,
+ 				"volume_type_id = 2"
+ 			];
+			$scope.setActive('volume');
+			return true;
 		case "totalSnapshots":
 			$scope.optional=[
  			    "project_id = "+data.project_id
@@ -118,6 +145,8 @@ app.controller('sbsCtrl', function($scope,$http) {
 		case "plaintextVolumes":
 		case "withMultiAttach":
 		case "totalSnapshots":
+		case "stdVolumes":
+		case "ssdVolumes":
 			return true;
 		default:
 			return false;
@@ -137,14 +166,11 @@ app.controller('sbsCtrl', function($scope,$http) {
 	$scope.clearFilters = function(){
 		$scope.optional=null;
 		$scope.search = "";
-		$scope.filter = ""
+		$scope.filter = "";
+		$scope.pageSize = 10;
 		$scope.getResult();
 	}
 	
-	$scope.back = function(){
-		$scope.activeTab = $scope.prevTab;
-		$scope.result = $scope.prevResult;
-	}
 	
 	$scope.newPage = function(page){
 		$scope.currPage=page;

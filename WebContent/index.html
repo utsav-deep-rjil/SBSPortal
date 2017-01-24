@@ -4,6 +4,7 @@
 <title>SBS Portal</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="lib/bootstrap.min.css">
 <script src="lib/bootstrap.min.js"></script>
 <script src="lib/angular.min.js"></script>
@@ -38,6 +39,7 @@
 	</nav>
 
 	<div class="container-fluid text-center">
+	
 		<div class="row content">
 			<div class="col-sm-8 text-left" id="sbsData" ng-init="getResult();">
 
@@ -46,14 +48,15 @@
 						<label>Filter:</label> <select ng-model="dataFilter"
 							ng-init="dataFilter='project_id'" class="form-control"
 							ng-change="getResult()"
-							ng-options="result.tableHeaders[key] for key in result.keys track by result.tableHeaders[key]">
-						</select> <input type="text" ng-model="search" class="form-control"
+							ng-options="result.tableHeaders[key] for key in filterKeys">
+						</select>
+						<input type="text" ng-model="search" class="form-control"
 							placeholder="Search" ng-change="getResult()"> <label>Page
-							Size</label> <select ng-model="pageSize" ng-init="pageSize=10"
-							class="form-control" ng-change="getResult()">
-							<option value=10 selected>10</option>
-							<option value=50>50</option>
-							<option value=100>100</option>
+							Size</label>
+						<select ng-model="pageSize"
+							ng-init="pageSize=10" class="form-control"
+							ng-change="getResult()"
+							ng-options="key for key in [10,50,100]">
 						</select>
 						<button type="button" ng-click="clearFilters();">Reset
 							Filters</button>
@@ -65,12 +68,11 @@
 						<tr>
 							<th>Index</th>
 							<th ng-repeat="key in result.keys" ng-click="sort(key)">{{result.tableHeaders[key]}}
-								<span class="glyphicon sort-icon" ng-show="sortKey==key"
-								ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+								<span ng-show="sortKey==key"
+								ng-class="{'fa fa-sort-asc':reverse,'fa fa-sort-desc':!reverse,'fa fa-fw fa-sort':true}"></span>
 							</th>
 						</tr>
 					</thead>
-
 					<tbody ng-init="getResult();">
 						<tr
 							ng-repeat="data in result.tableData">
@@ -84,13 +86,13 @@
 				</table>
 				<ul class="pagination" ng-init="currPage=1;getPages();">
 					<li ng-hide="currPage==1"><a ng-click="currPage=currPage-1;offset=offset-pageSize;getResult">Previous</a></li>
-					<li ng-hide="currPage<11"><a ng-click="currPage=1;offset=0;getResult()">1</a></li>
-					<li ng-hide="currPage<11"><a ng-click="currPage=currPage-10;offset=(currPage-1)*pageSize;getResult()">...</a></li>
+					<li ng-hide="currPage<7"><a ng-click="currPage=1;offset=0;getResult()">1</a></li>
+					<li ng-hide="currPage<7"><a ng-click="currPage=currPage-6;offset=(currPage-1)*pageSize;getResult()">...</a></li>
 					
 					<li ng-repeat="page in pages" ng-class="{active:page==currPage}"><a ng-click="newPage(page)">{{page}}</a></li>
 					
-					<li ng-hide="currPage>totalPages-10"><a ng-click="currPage=currPage+10;offset=(currPage-1)*pageSize;getResult()">...</a></li>
-					<li ng-hide="currPage>totalPages-10"><a ng-click="currPage=totalPages;offset=(currPage-1)*pageSize;getResult()">{{totalPages}}</a></li>
+					<li ng-hide="currPage>totalPages-5"><a ng-click="currPage=currPage+5;offset=(currPage-1)*pageSize;getResult()">...</a></li>
+					<li ng-hide="currPage>totalPages-5"><a ng-click="currPage=totalPages;offset=(currPage-1)*pageSize;getResult()">{{totalPages}}</a></li>
 					<li ng-hide="currPage==totalPages"><a ng-click="currPage=currPage+1;offset=offset+pageSize;getResult()">Next</a></li>
 				</ul>
 
