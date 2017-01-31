@@ -63,13 +63,16 @@
 					</div>
 				</form>
 				<br>
+				<div id="tableData">
 				<table>
 					<thead>
 						<tr>
 							<th>Index</th>
 							<th ng-repeat="key in result.keys" ng-click="sort(key)">{{result.tableHeaders[key]}}
+								<span ng-show="sortKey!=key && key!='accountType'"
+								ng-class="{'fa fa-fw fa-sort':true}" style="color:grey"></span>
 								<span ng-show="sortKey==key"
-								ng-class="{'fa fa-sort-asc':reverse,'fa fa-sort-desc':!reverse,'fa fa-fw fa-sort':true}"></span>
+								ng-class="{'fa fa-sort-asc':!reverse,'fa fa-sort-desc':reverse,'fa fa-fw fa-sort':true}"></span>
 							</th>
 						</tr>
 					</thead>
@@ -84,6 +87,7 @@
 						</tr>
 					</tbody>
 				</table>
+				</div>
 				<ul class="pagination" ng-init="currPage=1;getPages();">
 					<li ng-hide="currPage==1"><a ng-click="currPage=currPage-1;offset=offset-pageSize;getResult">Previous</a></li>
 					<li ng-hide="currPage<7"><a ng-click="currPage=1;offset=0;getResult()">1</a></li>
@@ -102,7 +106,8 @@
 	</div>
 
 	<footer class="container-fluid text-center">
-		<p>Footer Text</p>
+		<p>© 2017 Reliance Jio. All Rights Reserved.</p>
+		<p>This SBS web portal is intended to be used internally by the customer support team of Reliance Jio Infocom Ltd.</p>
 	</footer>
 </body>
 </html>

@@ -44,6 +44,8 @@ app.controller('sbsCtrl', function($scope,$http) {
 			return $scope.result;
 		})
 		.catch(function(error){
+			$scope.loading = false;
+			alert('An unexpected error occured. Please reload the page...');
 			$scope.error=error;
 		});
 		
@@ -96,6 +98,13 @@ app.controller('sbsCtrl', function($scope,$http) {
 			];
 			$scope.setActive('volume');
 			return true;
+		case "storageVolumes":
+			$scope.optional=[
+				"project_id = "+data.project_id,
+				"bootable = false"
+			];
+			$scope.setActive('volume');
+			return true;
 		case "plaintextVolumes":
 			$scope.optional=[
 			    "project_id = "+data.project_id,
@@ -103,14 +112,6 @@ app.controller('sbsCtrl', function($scope,$http) {
 			];
 			$scope.setActive('volume');
 			return true;
-		case "withMultiAttach":
-			$scope.optional=[
-			    "project_id = "+data.project_id,
-				"multiattach = true"
-			];
-			$scope.setActive('volume');
-			return true;
-
 		case "stdVolumes":
 			$scope.optional=[
  			    "project_id = "+data.project_id,
@@ -143,10 +144,10 @@ app.controller('sbsCtrl', function($scope,$http) {
 		case "encryptedVolumes":
 		case "bootableVolumes":
 		case "plaintextVolumes":
-		case "withMultiAttach":
 		case "totalSnapshots":
 		case "stdVolumes":
 		case "ssdVolumes":
+		case "storageVolumes":
 			return true;
 		default:
 			return false;
