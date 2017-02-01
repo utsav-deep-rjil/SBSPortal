@@ -67,7 +67,7 @@ tr:nth-child(even) {
 }
 
 #tableData {
-	width: 150%;
+	width: 148%;
 	overflow-x: auto;
 }
 

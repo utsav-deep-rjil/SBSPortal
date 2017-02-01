@@ -72,6 +72,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 		$scope.sortDirection = "ASC";
 		$scope.offset = 0;
 		$scope.currPage = 1;
+		$scope.dataFilter = 'project_id';
 		$scope.getResult();
 	}
 
@@ -167,7 +168,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 	$scope.clearFilters = function(){
 		$scope.optional=null;
 		$scope.search = "";
-		$scope.filter = "";
+		$scope.dataFilter = "project_id";
 		$scope.pageSize = 10;
 		$scope.getResult();
 	}
