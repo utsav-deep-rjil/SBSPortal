@@ -6,6 +6,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 	$scope.maxPages = 10;
 	$scope.loading = false;
 	$scope.pageSize = 10;
+	$scope.totalPages = 1;
 	$scope.dataFilter = 'project_id';
 	
 	if($scope.sortDirection==undefined){
@@ -73,6 +74,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 		$scope.offset = 0;
 		$scope.currPage = 1;
 		$scope.dataFilter = 'project_id';
+		$scope.search = '';
 		$scope.getResult();
 	}
 
@@ -99,7 +101,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 			];
 			$scope.setActive('volume');
 			return true;
-		case "storageVolumes":
+		case "userVolumes":
 			$scope.optional=[
 				"project_id = "+data.project_id,
 				"bootable = false"
@@ -116,7 +118,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 		case "stdVolumes":
 			$scope.optional=[
  			    "project_id = "+data.project_id,
- 				"volume_type_id = 1 or v.volume_type_id is NULL"
+ 				"volume_type_id = 1 or v1.volume_type_id is NULL"
  			];
 			$scope.setActive('volume');
 			return true;
@@ -148,7 +150,7 @@ app.controller('sbsCtrl', function($scope,$http) {
 		case "totalSnapshots":
 		case "stdVolumes":
 		case "ssdVolumes":
-		case "storageVolumes":
+		case "userVolumes":
 			return true;
 		default:
 			return false;
